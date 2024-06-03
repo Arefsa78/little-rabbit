@@ -2,6 +2,9 @@ import random
 import time
 import pika
 
+start = 0
+send_time = 0
+
 class Sender:
     def __init__(self):
         self.connection = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
@@ -20,8 +23,10 @@ class Sender:
         self.connection.close()
         
     def produce(self):
-        for i in range(100):
+        for i in range(10000):
             self.send(f"M,{i},S,{random.randint(0, 10)}")
+        send_time = time.time() - start
+        
     
     def receive(self):
         self.channel.basic_consume(queue='test_reply',
@@ -33,10 +38,16 @@ class Sender:
     
     def callback(self, ch, method, properties, body):
         body = body.decode()
+        d = body.split(',')
+        if d[1] == '9999':
+            print(f"############# Receive Time: {time.time() - start}")
+            print(f"############# Send Time: {send_time}")
         print(f" [x] Received {body}")
         self.log.write(f"{body} \n")
         self.log.flush()
 
 sender = Sender()
+start = time.time()
 sender.produce()
+start = time.time()
 sender.receive()

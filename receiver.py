@@ -27,7 +27,6 @@ class Receiver:
     def consume(self, body):
         sleep_time = int(body.split(',')[3])
         print(f"RECEIVER {self.name} got: {body}")
-        time.sleep(sleep_time)
         
 name = sys.argv[1]
 receiver = Receiver(name)

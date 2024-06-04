@@ -25,6 +25,7 @@ class Sender:
     def produce(self):
         for i in range(10000):
             self.send(f"M,{i},S,{random.randint(0, 10)}")
+        global send_time
         send_time = time.time() - start
         
     
